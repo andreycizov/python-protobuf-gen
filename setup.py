@@ -4,6 +4,7 @@ import protobuf_gen as pkg
 
 readme = open('README.rst').read()
 history = open('HISTORY.rst').read()
+reqs = [x.strip() for x in open('requirements.txt').readlines()]
 
 setup(
     name=pkg.__name__,
@@ -15,11 +16,7 @@ setup(
     keywords='',
     include_package_data=True,
     long_description=readme,
-    install_requires=[
-        'grpcio>=1.2.0',
-        'grpcio_tools',
-        'protobuf',
-    ],
+    install_requires=reqs,
     test_suite='tests',
     tests_require=[
 
