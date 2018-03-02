@@ -1,0 +1,50 @@
+syntax = "proto3";
+package serverpb;
+
+import "google/api/annotations.proto";
+
+import "protobuf_gen_test/another.proto";
+
+service Radio {
+  // Range gets the keys in the range from the key-value store.
+  rpc RandomNumber(RandomNumberRequest) returns (RandomNumberResponse) {
+      option (google.api.http) = {
+        post: "/v1/rnd/"
+        body: "*"
+    };
+  }
+  
+  rpc AnotherRandomNumber(stream anotherpb.AnotherRandomNumberRequest) returns (stream anotherpb.AnotherRandomNumberResponse) {
+        option (google.api.http) = {
+          post: "/v1/rnd/another"
+          body: "*"
+      };
+    }
+}
+
+message RandomNumberRequest {
+    enum SortOrder {
+        NONE = 0;
+        ASCEND = 1;
+        DESCEND = 2;
+  }
+
+  SortOrder sort_by = 1;
+}
+
+message RandomNumber {
+    uint64 body = 1;
+}
+
+message RandomNumberResponse {
+    repeated uint64 int_responses = 1;
+    repeated RandomNumber obj_responses = 2;
+}
+
+message EnumList {
+    enum ABC {
+        A = 0;
+        B = 1;
+    }
+    repeated ABC enums = 1;
+}

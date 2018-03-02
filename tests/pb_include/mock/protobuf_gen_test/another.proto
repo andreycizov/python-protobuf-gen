@@ -1,0 +1,23 @@
+syntax = "proto3";
+package anotherpb;
+
+enum SortOrder {
+        NONE = 0; // default, no sorting
+        ASCEND = 1; // lowest target value first
+        DESCEND = 2; // highest target value first
+}
+
+message AnotherRandomNumberRequest {
+
+
+  SortOrder sort_by = 1;
+}
+
+message AnotherRandomNumber {
+    uint64 body = 1;
+}
+
+message AnotherRandomNumberResponse {
+    repeated uint64 int_responses = 1;
+    repeated AnotherRandomNumber obj_responses = 2;
+}
