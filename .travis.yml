@@ -9,3 +9,14 @@ script: tox
 
 after_success:
     - codecov
+
+deploy:
+  provider: pypi
+  user: andreycizov
+  password:
+    secure: mZr0xm4PodAJOOaLsFBeEg1CGgA/F8KU/6svjZi72Cdx68U8sPhb1Q1futlrlEBr7ew4r2LIhViUB/kH/lF+d5vjdA1Od/cWdtM28MVN5KrXyMKxPFBnVVMBMktVWRInK46xnTjnu/hD/p+vjmAem5A4tJr/ot9x0glPQ7SFM7S/3L6sZYRebvd0k0XM/DBYWwCmWQa0n8xJ39MzBqXTdexERhr0mvupPX3XlNZMqh7O3/JdUkPgpj9kt+pwOuiyQR6KWD+fC62YPWI6x6DGAK0D+eUbKJCCuXCwMTu0Jy4MaVZt/U2ElmBR6V6lG872r0RASsiVtvkr2rvOFCkFB3d6npZt2hPj5pGPfZ+8b2/LUzgRmiRRJ4Fq3/rlroXDx0QJ2Q2WxqaRrF9GmF5rFuXuJmmwV3cKGgj9f+E8n9RP2e9t7rIHPkGyb3A5CxY3pxAhY/EFBXd7Bf+ON4gJwJDr1ZJH8s7iZ23CZpGeKpSbztxKoil2PiXovFp0/TcbpCw202lGK+IkQh22MwLKDSzSqU/Awznv2/VQmSPUaoExYPZC+AdzZryMzJBV2ITszGSjv79/LjpE+tPf1bgnDxX8CGI7UOdr3FLOiV1Fl0f7o4bWnq45kiFhpe2vBtpIk+GUT5lWzMS/uhwJKQKkpIzruuDZd3gzaPPVFMuTbfg=
+  on:
+    tags: true
+    distributions: sdist bdist_wheel
+    repo: andreycizov/python-protobuf-gen
+    condition: $TOXENV == py36
