@@ -45,10 +45,11 @@ def arguments(args: ArgumentParser):
 
 def _build_pb_with_prefix(
     module_prefix: str,
-    protoc_output_dir: str,
+    root_output_dir: str,
     includes: List[str] = None,
     input_proto: List[str] = None,
 ):
+    protoc_output_dir = os.path.join(root_output_dir, module_prefix.replace('.', '/'))
     os.makedirs(protoc_output_dir, exist_ok=True)
 
     args = ['__main__']
@@ -63,6 +64,8 @@ def _build_pb_with_prefix(
     ]
 
     args += [x for x in input_proto]
+
+    print('protoc', args)
 
     r = protoc_main(
         args
