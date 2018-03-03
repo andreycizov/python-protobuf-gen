@@ -37,8 +37,7 @@ class TestProtobufGenerator(unittest.TestCase):
                 root_autogen=mod_root + '.' + autogen_root,
                 includes=[
                     os.path.join(dir_test, 'pb_include/mock'),
-                    os.path.join(dir_test, 'pb_include/grpc-gateway/third_party/googleapis'),
-                    pkg_resources.resource_filename('grpc_tools', '_proto'),
+                    os.path.join(dir_test, 'pb_include/grpc-gateway/third_party/googleapis')
                 ],
                 input_proto=[
                     os.path.join('protobuf_gen_test/server.proto'),

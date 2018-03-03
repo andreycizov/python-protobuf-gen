@@ -14,6 +14,7 @@ setup(
     packages=find_packages(include=(pkg.__name__,)),
     description='Python 3 type hinted protobuf binding generator',
     keywords='',
+    url='https://github.com/andreycizov/python-protobuf-gen',
     include_package_data=True,
     long_description=readme,
     install_requires=reqs,
@@ -21,4 +22,11 @@ setup(
     tests_require=[
 
     ],
+    classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: Apache Software License',
+        'Natural Language :: English',
+        'Programming Language :: Python :: 3.6',
+    ]
 )

@@ -2,6 +2,7 @@ import os
 from argparse import ArgumentParser
 from typing import List
 
+import pkg_resources
 from grpc_tools.protoc import main as protoc_main
 
 from protobuf_gen.error import TranspilerError
@@ -51,6 +52,8 @@ def _build_pb_with_prefix(
     os.makedirs(protoc_output_dir, exist_ok=True)
 
     args = ['__main__']
+
+    includes = [pkg_resources.resource_filename('grpc_tools', '_proto')] + includes
 
     args += ['-I' + x for x in includes]
 
