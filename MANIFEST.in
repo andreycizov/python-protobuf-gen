@@ -5,6 +5,6 @@ include HISTORY.rst
 include LICENSE
 include README.rst
 include requirements.txt
-include test-requirements.txt
+include requirements-tests.txt
 
 prune tests
