@@ -15,36 +15,15 @@ from protobuf_gen.patch import ServiceMethodPatch
 from protobuf_gen.transpiler import InputModule
 
 
-def make_sure_modules_are_purged_from_cache(mod_root):
-    invalidate_caches()
-
-    for k, x in sys.modules.items():
-        if k.startswith(mod_root):
-            print('del', x)
-            del x
-
-    # try:
-    #
-    #     x = import_module(mod_root)
-    #     if x is not None:
-    #         print(dir(x))
-    #         srv = reload(x)
-    #     m = import_module(mod_root)
-    #     del m
-    #     srv = reload(import_module(mod_root))
-    # except AttributeError:
-    #     pass
-
-
 class TestProtobufGenerator(unittest.TestCase):
     def test_all(self):
         dir_test = os.path.dirname(__file__)
 
         my_dir = mkdtemp()
-        # my_dir = os.path.join(os.path.dirname(__file__), '_build')
 
         mod_root = 'protobuf_gen_test'
-        autogen_root = 'xyxasdautogen'
+        wrapper_root = 'wrappers'
+        autogen_root = '_autogen'
 
         with self.subTest('build'):
             patch = [
@@ -52,9 +31,10 @@ class TestProtobufGenerator(unittest.TestCase):
             ]
 
             transpile(
-                output_dir=os.path.join(my_dir, mod_root),
+                output_dir_wrappers=os.path.join(my_dir, mod_root, wrapper_root),
+                output_dir_autogen=os.path.join(my_dir, mod_root, autogen_root),
                 root_module=mod_root,
-                root_autogen=autogen_root,
+                root_autogen=mod_root + '.' + autogen_root,
                 includes=[
                     os.path.join(dir_test, 'pb_include/mock'),
                     os.path.join(dir_test, 'pb_include/grpc-gateway/third_party/googleapis'),
@@ -67,31 +47,16 @@ class TestProtobufGenerator(unittest.TestCase):
                     os.path.join('google/api/http.proto'),
                 ],
                 output_files={
-                    'server': InputModule('protobuf_gen_test/server.proto', patch),
-                    'another': InputModule('protobuf_gen_test/another.proto'),
+                    'server.py': InputModule('wrappers.server', 'protobuf_gen_test/server.proto', patch),
+                    'another.py': InputModule('wrappers.another', 'protobuf_gen_test/another.proto'),
                 }
             )
 
-
-
         with self.subTest('import_final_mod'):
-
-            descriptor_pool._DEFAULT = descriptor_pool.DescriptorPool()
-
-            # make_sure_modules_are_purged_from_cache(mod_root)
-            # make_sure_modules_are_purged_from_cache(mod_root)
-            # make_sure_modules_are_purged_from_cache(mod_root)
-            # make_sure_modules_are_purged_from_cache(mod_root)
-            #
             sys.path += [my_dir]
 
-            # for x in os.walk(my_dir):
-            #     print(x)
-
-            # srv = import_module(mod_root)
-
-            srv = import_module(mod_root + '.' + 'server')
-            ano = import_module(mod_root + '.' + 'another')
+            srv = import_module(mod_root + '.' + wrapper_root + '.' + 'server')
+            ano = import_module(mod_root + '.' + wrapper_root + '.' + 'another')
 
             srv_names = dir(srv)
             ano_names = dir(ano)

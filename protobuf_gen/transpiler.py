@@ -25,9 +25,11 @@ def _map_file(d: FileDescriptor):
 class InputModule:
     def __init__(
         self,
+        cannonical_name: str,
         filename: str,
         patches: PatchList = None
     ):
+        self.cannonical_name = cannonical_name
         self.filename = filename
         self.patches = [] if patches is None else patches
 
@@ -36,12 +38,13 @@ class InputModule:
         return _map_file_name(self.filename)
 
     def to_output(self, desc: FileDescriptor):
-        return OutputModule(desc, self.patches)
+        return OutputModule(self.cannonical_name, desc, self.patches)
 
 
 class OutputModule:
     def __init__(
         self,
+        cannonical_name: str,
         descriptor: FileDescriptor,
         patches: PatchList = None
     ):
@@ -50,6 +53,7 @@ class OutputModule:
         :param descriptor: DESCRIPTOR attribute of the protobuf auto-generated _pb2.py module
         :param patches: a list of patches to be applied to the module
         """
+        self.cannonical_name = cannonical_name
         self.descriptor = descriptor
         self.patches = [] if patches is None else patches
 
@@ -123,7 +127,7 @@ class BuildContext:
 
         for k, v in self.map.items():
             if v.descriptor == f:
-                z = (k, v.descriptor)
+                z = (v.cannonical_name, v.descriptor)
                 break
 
         assert z is not None, f'{f.name} needs a map'
@@ -524,8 +528,10 @@ def build(props: BuildProps, outdir='./'):
 
         file_str = build_file(BuildContext(props), v.descriptor)
 
-        file_name = os.path.join(outdir, k + '.py')
+        file_name = os.path.join(outdir, k)
         file_bts = file_str.encode()
+
+        os.makedirs(os.path.dirname(file_name), exist_ok=True)
 
         with open(file_name, 'w+b') as f_in:
             f_in.write(file_bts)
