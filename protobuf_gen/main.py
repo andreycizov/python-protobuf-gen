@@ -8,7 +8,6 @@ from protobuf_gen.wrap import wrap
 def transpile(
     output_dir_wrappers='.',
     output_dir_autogen='.',
-    root_module='example_mod',
     root_autogen='example_mod.autogen',
     includes: List[str] = None,
     input_proto: List[str] = None,
@@ -28,7 +27,6 @@ def transpile(
 
     wrap(
         output_dir_wrappers,
-        root_module,
         root_autogen,
         output_files,
     )

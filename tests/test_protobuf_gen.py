@@ -33,7 +33,6 @@ class TestProtobufGenerator(unittest.TestCase):
             transpile(
                 output_dir_wrappers=os.path.join(my_dir),
                 output_dir_autogen=os.path.join(my_dir),
-                root_module=mod_root,
                 root_autogen=mod_root + '.' + autogen_root,
                 includes=[
                     os.path.join(dir_test, 'pb_include/mock'),

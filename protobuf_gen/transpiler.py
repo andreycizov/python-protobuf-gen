@@ -61,17 +61,13 @@ class OutputModule:
 class BuildProps:
     def __init__(
         self,
-        absolute_module_name: str = '',
         absolute_autogen_name: str = '',
         output_mods: List[OutputModule] = None,
     ):
         """
-
-        :param absolute_module_name: the output name of the module
         :param absolute_autogen_name: the absolute name of the
         :param output_mods:
         """
-        self.prefix = absolute_module_name
         self.prefix_autogen = absolute_autogen_name
         self.output_mods = [] if output_mods is None else output_mods
 
@@ -88,10 +84,6 @@ class BuildContext:
     @property
     def map(self):
         return self.props.output_mods
-
-    @property
-    def prefix(self):
-        return self.props.prefix
 
     @property
     def prefix_autogen(self):
