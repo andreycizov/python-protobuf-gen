@@ -4,7 +4,7 @@ There's much in terms of cleaning to be done, but it works correctly
 
 import os
 from collections import defaultdict
-from typing import Iterable, Dict, Set, Tuple, Optional, NamedTuple
+from typing import Iterable, Dict, Set, Tuple, Optional, NamedTuple, List
 
 from google.protobuf.descriptor import FileDescriptor, Descriptor, FieldDescriptor, EnumDescriptor, EnumValueDescriptor, \
     ServiceDescriptor, MethodDescriptor, _NestedDescriptorBase
@@ -14,12 +14,12 @@ from protobuf_gen.const import PBToPy
 from protobuf_gen.autogen.core import PBLabel, PBType
 
 
-def _map_file_name(name: str):
+def _map_proto_to_module(name: str):
     return name.replace('/', '.').replace('.proto', '_pb2')
 
 
 def _map_file(d: FileDescriptor):
-    return _map_file_name(d.name)
+    return _map_proto_to_module(d.name)
 
 
 class InputModule:
@@ -35,7 +35,7 @@ class InputModule:
 
     @property
     def mod(self):
-        return _map_file_name(self.filename)
+        return _map_proto_to_module(self.filename)
 
     def to_output(self, desc: FileDescriptor):
         return OutputModule(self.cannonical_name, desc, self.patches)
@@ -53,7 +53,7 @@ class OutputModule:
         :param descriptor: DESCRIPTOR attribute of the protobuf auto-generated _pb2.py module
         :param patches: a list of patches to be applied to the module
         """
-        self.cannonical_name = cannonical_name
+        self.module_name = cannonical_name
         self.descriptor = descriptor
         self.patches = [] if patches is None else patches
 
@@ -63,7 +63,7 @@ class BuildProps:
         self,
         absolute_module_name: str = '',
         absolute_autogen_name: str = '',
-        output_mods: Dict[str, OutputModule] = None,
+        output_mods: List[OutputModule] = None,
     ):
         """
 
@@ -73,7 +73,7 @@ class BuildProps:
         """
         self.prefix = absolute_module_name
         self.prefix_autogen = absolute_autogen_name
-        self.output_mods = {} if output_mods is None else output_mods
+        self.output_mods = [] if output_mods is None else output_mods
 
 
 class BuildContext:
@@ -125,9 +125,9 @@ class BuildContext:
         z: Optional[Tuple[str, str]]
         z = None
 
-        for k, v in self.map.items():
+        for v in self.map:
             if v.descriptor == f:
-                z = (v.cannonical_name, v.descriptor)
+                z = (v.module_name, v.descriptor)
                 break
 
         assert z is not None, f'{f.name} needs a map'
@@ -143,7 +143,7 @@ class BuildContext:
 
         abs_map, _ = self.get_file_absolute(y.file)
 
-        r.append(self.prefix + '.' + abs_map)
+        r.append(abs_map)
 
         # alias = self.add_absolute_requirement(r[-1])
 
@@ -522,13 +522,13 @@ from enum import Enum
 
 
 def build(props: BuildProps, outdir='./'):
-    for k, v in props.output_mods.items():
+    for v in props.output_mods:
 
         patch_file(v.descriptor, v.patches)
 
         file_str = build_file(BuildContext(props), v.descriptor)
 
-        file_name = os.path.join(outdir, k)
+        file_name = os.path.join(outdir, v.module_name.replace('.', '/') + '.py')
         file_bts = file_str.encode()
 
         os.makedirs(os.path.dirname(file_name), exist_ok=True)

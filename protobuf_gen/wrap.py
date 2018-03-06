@@ -44,77 +44,39 @@ def _random_pkg_name():
 
 
 def _load_protoc_mods(
-    includes: List[str],
-    input_proto: List[str],
-    output_files: Dict[str, InputModule],
-    workdir: str = None,
-    pkg: str = None,
-    existing=False
+    output_files: List[InputModule],
+    root_autogen: str,
 ):
-    if workdir is None:
-        workdir = mkdtemp()
-    if pkg is None:
-        pkg = _random_pkg_name()
+    # we just need to say "map this definition module to a new one"
 
-    protoc_output_dir = os.path.join(workdir, pkg.replace('.', '/'))
+    output_mods: List[OutputModule] = []
+    clear_mods = []
 
-    os.makedirs(protoc_output_dir, exist_ok=True)
+    for of in output_files:
+        to_import = root_autogen + '.' + of.mod
+        print('Importing', to_import)
+        m = import_module(to_import)
 
-    try:
-        sys.path = sys.path + [os.path.join(workdir)]
+        clear_mods.append(m)
 
-        if not existing:
+        output_mods += [of.to_output(m.DESCRIPTOR)]
 
-            _build_pb_with_prefix(
-                pkg,
-                protoc_output_dir,
-                includes,
-                input_proto
-            )
-
-        output_mods: Dict[str, OutputModule] = {}
-        clear_mods = []
-
-        print('Workdir', workdir)
-
-        for k, of in output_files.items():
-            to_import = pkg + '.' + of.mod
-            print('Importing', to_import)
-            m = import_module(to_import)
-
-            clear_mods.append(m)
-
-            output_mods[k] = of.to_output(m.DESCRIPTOR)
-
-        if not existing:
-            _clear_pb_descriptor_database()
-
-        return output_mods
-    finally:
-        sys.path = [x for x in sys.path if x != workdir]
-
-        if not existing:
-            shutil.rmtree(workdir)
+    return output_mods
 
 
 def wrap(
     output_dir_wrappers='./wrappers',
     root_module='example_mod',
     root_autogen='autogen',
-    includes: List[str] = None,
-    input_proto: List[str] = None,
-    output_files: Dict[str, InputModule] = None,
-    existing: Optional[Tuple[str, str]] = None
+    output_files: List[InputModule] = None,
 ):
     build(
         BuildProps(
             root_module,
             root_autogen,
             _load_protoc_mods(
-                includes,
-                input_proto,
                 output_files,
-                *(existing + (True,) if existing else (None, None, False))
+                root_autogen,
             )
         ),
         outdir=output_dir_wrappers

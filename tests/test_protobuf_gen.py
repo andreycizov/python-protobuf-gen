@@ -31,7 +31,7 @@ class TestProtobufGenerator(unittest.TestCase):
             ]
 
             transpile(
-                output_dir_wrappers=os.path.join(my_dir, mod_root, wrapper_root),
+                output_dir_wrappers=os.path.join(my_dir),
                 output_dir_autogen=os.path.join(my_dir),
                 root_module=mod_root,
                 root_autogen=mod_root + '.' + autogen_root,
@@ -45,10 +45,10 @@ class TestProtobufGenerator(unittest.TestCase):
                     os.path.join('google/api/annotations.proto'),
                     os.path.join('google/api/http.proto'),
                 ],
-                output_files={
-                    'server.py': InputModule('wrappers.server', 'protobuf_gen_test/server.proto', patch),
-                    'another.py': InputModule('wrappers.another', 'protobuf_gen_test/another.proto'),
-                }
+                output_files=[
+                    InputModule('protobuf_gen_test.wrappers.server', 'protobuf_gen_test/server.proto', patch),
+                    InputModule('protobuf_gen_test.wrappers.another', 'protobuf_gen_test/another.proto'),
+                ]
             )
 
         with self.subTest('import_final_mod'):

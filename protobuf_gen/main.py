@@ -12,7 +12,7 @@ def transpile(
     root_autogen='example_mod.autogen',
     includes: List[str] = None,
     input_proto: List[str] = None,
-    output_files: Dict[str, InputModule] = None
+    output_files: List[InputModule] = None
 ):
     remap(
         output_dir_autogen,
@@ -21,12 +21,14 @@ def transpile(
         input_proto
     )
 
+    import sys
+    sys.path += [
+        output_dir_autogen
+    ]
+
     wrap(
         output_dir_wrappers,
         root_module,
         root_autogen,
-        includes,
-        input_proto,
         output_files,
-        (output_dir_autogen, root_autogen)
     )

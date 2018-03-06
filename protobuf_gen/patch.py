@@ -5,6 +5,8 @@ from typing import NamedTuple, Dict, Tuple, List, Union
 
 from google.protobuf.descriptor import FileDescriptor
 
+# these modules are provided as part of the standard python protobuf distribution by google and therefore are
+# not required.
 DO_NO_REPLACE = [
     'google.protobuf',
 ]

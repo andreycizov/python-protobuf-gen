@@ -65,8 +65,6 @@ def _build_pb_with_prefix(
 
     args += [x for x in input_proto]
 
-    print('protoc', args)
-
     r = protoc_main(
         args
     )
