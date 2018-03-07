@@ -26,7 +26,8 @@ This is a library to generate type-hinted protocol buffer bindings. This tool so
 Google cproto compiler python output:
 
 - cproto does not support exporting the code with the package roots that are different from what had been supplied
-  by the original .proto file authors, therefore expecting the protocol users to sed through the code (see issues `881 <https://github.com/google/protobuf/issues/881>`_ and `1491 <https://github.com/google/protobuf/issues/1491>`_).
+  by the original .proto file authors, therefore expecting the protocol users to sed through the code (see issues
+  `881 <https://github.com/google/protobuf/issues/881>`_ and `1491 <https://github.com/google/protobuf/issues/1491>`_).
 - It builds the interfaces at run time, therefore disallowing one from using the static type checkers and disabling
   the auto-complete in your favourite IDE.
 
@@ -49,7 +50,7 @@ from several protobuf libraries, so we are going to need all of them.
     git clone https://github.com/gogo/protobuf.git ./pb-includes/protobuf
 
 
-asdasd
+Now, let's actually generate the files.
 
 
 .. code-block:: python
@@ -81,3 +82,6 @@ asdasd
     )
 
 
+Author
+------
+Andrey Cizov (acizov@gmail.com), 2018
