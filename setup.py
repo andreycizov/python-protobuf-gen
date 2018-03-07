@@ -7,7 +7,7 @@ test_reqs = [x.strip() for x in open('requirements-tests.txt').readlines()]
 
 setup(
     name='protobuf_gen',
-    version='0.0.3',
+    version='0.0.4',
     author='Andrey Cizov',
     author_email='acizov@gmail.com',
     packages=find_packages(include=('protobuf_gen', 'protobuf_gen.*',)),
