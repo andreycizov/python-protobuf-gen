@@ -19,4 +19,3 @@ deploy:
     tags: true
     distributions: sdist bdist_wheel
     repo: andreycizov/python-protobuf-gen
-    condition: $TOXENV == py36
