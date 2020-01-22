@@ -13,7 +13,7 @@ DO_NO_REPLACE = [
 
 
 def rename_protobuf_imports(dir_root, root, do_not_replace=DO_NO_REPLACE):
-    pattern = r'^from ([^ ]+) import ([^ ]+)_pb2 as ([^ ]+)__pb2$'
+    pattern = r'^(?:from ([^ ]+) )?import ([^ ]+)_pb2 as ([^ ]+)__pb2$'
     pattern = re.compile(pattern)
 
     for path, _, files in os.walk(dir_root):
@@ -35,9 +35,13 @@ def rename_protobuf_imports(dir_root, root, do_not_replace=DO_NO_REPLACE):
             with open(os.path.join(path, file), 'w+') as f:
                 for line in lines:
                     match = pattern.match(line)
-                    if match and match.group(1) not in do_not_replace:
+                    if match and (match.group(1) or match.group(2)) not in do_not_replace:
                         changes += 1
-                        f.write(f'from {root}.{match.group(1)} import {match.group(2)}_pb2 as {match.group(3)}__pb2\n')
+                        from_clause, import_clause, as_clause = match.groups()
+                        if from_clause:
+                            f.write(f'from {root}.{from_clause} import {import_clause}_pb2 as {as_clause}__pb2\n')
+                        else:
+                            f.write(f'{root}.{import_clause}_pb2 as {as_clause}__pb2\n')
                     else:
                         f.write(line)
 
